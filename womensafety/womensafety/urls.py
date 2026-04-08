@@ -10,17 +10,17 @@ urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
 
+    
+path('home/', views.home, name='home'),
+path('features/', views.features, name='features'),
+path('contact/', views.contact, name='contact'),
     # Auth
     path('', views.register, name="register"),
     path('register/', views.register, name="register"),
     path('login/', views.user_login, name="login"),
     path('logout/', views.user_logout, name="logout"),
 
-    # Dashboard
-    path('dashboard/', views.dashboard, name="dashboard"),
-
-    # Contacts
-    path('add-contact/', views.add_contact, name="add_contact"),
+    
 
     # Map
     path('map/', views.safety_map, name="map"),
@@ -30,7 +30,7 @@ urlpatterns = [
     path('sos/', views.sos_alert, name="sos"),
 
     # ✅ AUDIO UPLOAD (IMPORTANT)
-    path('upload-audio/', views.upload_audio, name='upload_audio'),
+    path('upload_audio/', views.upload_audio, name='upload_audio'),
     # live locations
     # LIVE TRACKING
 path('live-location/', views.live_location),

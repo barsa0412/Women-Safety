@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Features</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- Color Palette ---------- */
+/* #546B41, #99AD7A, #DCCCAC, #FFF8EC */
+
+body {
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #FFF8EC;
+    color: #333;
+}
+
+/* ---------- Navbar ---------- */
+nav {
+    background: #546B41;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav a {
+    color: #FFF8EC;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: 700;
+}
+
+nav a:hover {
+    color: #DCCCAC;
+}
+
+nav img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+/* ---------- Container ---------- */
+.container {
+    width: 90%;
+    margin: 40px auto;
+}
+
+.title {
+    text-align: center;
+    font-size: 32px;
+    color: #546B41;
+    margin-bottom: 30px;
+}
+
+/* ---------- Feature Boxes ---------- */
+.features {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.box {
+    background: white;
+    width: 260px;
+    min-height: 280px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.box:hover {
+    transform: translateY(-5px);
+}
+
+.box h2 {
+    color: #546B41;
+    margin-bottom: 15px;
+}
+
+/* ---------- SOS Button ---------- */
+.sos-btn {
+    background: #FF4C4C;
+    color: white;
+    border: none;
+    padding: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sos-btn:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(255, 76, 76, 0.6);
+}
+
+/* ---------- Other Buttons ---------- */
+button {
+    background: #99AD7A;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #546B41;
+}
+
+/* ---------- Contact List ---------- */
+.contact-list {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.contact-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.status {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ---------- Footer ---------- */
+footer {
+    background: #546B41;
+    color: #FFF8EC;
+    text-align: center;
+    padding: 15px;
+    margin-top: 50px;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+    <img src="https://www.google.com/maps?q=23.075394000000003,76.8542347" alt="Logo">
+    <div>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'features' %}">Features</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+<h1 class="title">Safety Features</h1>
+
+<div class="features">
+
+    <!-- SOS BOX -->
+    <div class="box">
+        <h2>SOS Alert</h2>
+        <button class="sos-btn" onclick="sendSOS()">🚨</button>
+        <p>Your live location will be sent to saved contacts.</p>
+    </div>
+
+    <!-- CONTACT BOX -->
+    <div class="box">
+        <h2>Emergency Contacts</h2>
+        <div class="contact-list">
+            {% for c in contacts %}
+                <div class="contact-item">
+                    {{ c.name }}<br>
+                    {{ c.phone }}
+                </div>
+            {% empty %}
+                No contacts saved
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- AUDIO BOX -->
+    <div class="box">
+        <h2>Audio Recorder</h2>
+        <button onclick="startRecording()">Start</button>
+        <button onclick="stopRecording()">Stop</button>
+
+        <form id="audioForm" method="POST" enctype="multipart/form-data" action="/upload_audio/">
+            {% csrf_token %}
+            <input type="file" id="audioFile" name="audio" hidden>
+            <button type="button" onclick="upload_audio()">Upload</button>
+        </form>
+
+        <div id="status" class="status">Ready</div>
+    </div>
+
+</div>
+</div>
+
+<!-- Footer -->
+<footer>
+    &copy; 2026 Women Safety App. All Rights Reserved.
+</footer>
+
+<script>
+/* ---------- SOS ---------- */
+function sendSOS(){
+    if(!navigator.geolocation){
+        alert("Geolocation not supported!");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(pos){
+        let lat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+
+        let location = "https://www.google.com/maps?q=" + lat + "," + lon;
+        let message = "🚨 EMERGENCY! I am in danger. My location: " + location;
+
+        fetch("/sos/",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body:JSON.stringify({lat:lat, lon:lon})
+        });
+
+        {% for c in contacts %}
+        window.open("https://wa.me/{{ c.phone }}?text=" + encodeURIComponent(message), "_blank");
+        {% endfor %}
+
+    }, function(error){
+        alert("Location access denied!");
+    });
+}
+
+function getCSRFToken(){
+    let cookies = document.cookie.split(";");
+    for(let i=0;i<cookies.length;i++){
+        let c = cookies[i].trim();
+        if(c.startsWith("csrftoken=")){
+            return c.substring("csrftoken=".length);
+        }
+    }
+    return "";
+}
+
+/* ---------- AUDIO ---------- */
+let recorder;
+let audioChunks=[];
+
+async function startRecording(){
+    let stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    recorder = new MediaRecorder(stream);
+    audioChunks=[];
+    recorder.ondataavailable = e=>{ audioChunks.push(e.data); };
+    recorder.start();
+    document.getElementById("status").innerText="Recording...";
+}
+
+function stopRecording(){
+    recorder.stop();
+    recorder.onstop = ()=>{
+        let blob = new Blob(audioChunks,{type:"audio/webm"});
+        let file = new File([blob],"recording.webm");
+        let container = new DataTransfer();
+        container.items.add(file);
+        document.getElementById("audioFile").files = container.files;
+        document.getElementById("status").innerText="Recording Ready";
+    };
+}
+
+function upload_audio(){
+    document.getElementById("audioForm").submit();
+}
+</script>
+
+</body>
+</html>

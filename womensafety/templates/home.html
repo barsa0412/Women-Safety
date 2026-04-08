@@ -1,65 +1,300 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>Women Safety App</title>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<body style="text-align:center; font-family:Arial;">
+<title>SheSecure Home</title>
 
-<h1>🚨 Women Safety Web Application</h1>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- SOS BUTTON -->
-<button onclick="sendSOS()" style="padding:15px; background:red; color:white; font-size:20px;">
-SOS ALERT
-</button>
+<style>
 
-<br><br>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-<!-- FAKE CALL BUTTON -->
-<button onclick="fakeCall()" style="padding:15px; background:green; color:white; font-size:20px;">
-Fake Call Escape
-</button>
+body{
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(135deg,#FFF8EC,#DCCCAC,#99AD7A,#546B41);
+    color:black;
+}
 
-<br><br>
+/* Navbar */
 
-<h2 id="call"></h2>
+.navbar{
+    width:100%;
+    padding:18px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,0.35);
+    backdrop-filter:blur(10px);
+}
+
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:22px;
+    font-weight:700;
+    color:black;
+}
+
+.nav-logo{
+    width:45px;
+}
+
+.nav-center{
+    display:flex;
+    gap:30px;
+}
+
+.nav-center a,
+.nav-right a{
+    color:black;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.nav-center a:hover,
+.nav-right a:hover{
+    color:#546B41;
+}
+
+/* Hero */
+
+.hero{
+    text-align:center;
+    padding:50px 20px 20px;
+}
+
+.hero h1{
+    font-size:52px;
+    font-weight:700;
+    color:#546B41;
+}
+
+.hero p{
+    margin-top:10px;
+    font-size:18px;
+    color:black;
+}
+
+/* Main */
+
+.main-section{
+    display:flex;
+    justify-content:space-between;
+    padding:40px 60px;
+    gap:40px;
+}
+
+/* Left */
+
+.left-content{
+    width:50%;
+}
+
+.info-card{
+    background:rgba(255,255,255,0.6);
+    padding:22px;
+    margin-bottom:20px;
+    border-radius:18px;
+    cursor:pointer;
+    transition:0.4s;
+    backdrop-filter:blur(12px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+.info-card:hover{
+    transform:translateX(8px);
+}
+
+.info-card h3{
+    font-weight:700;
+    color:#546B41;
+    margin-bottom:12px;
+}
+
+.info-content{
+    display:none;
+    font-size:14px;
+    line-height:1.9;
+    font-weight:400;
+    color:black;
+}
+
+/* Right */
+
+.right-content{
+    width:50%;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+    align-items:center;
+}
+
+.right-content img{
+    width:60%;
+    border-radius:20px;
+    box-shadow:0 12px 25px rgba(0,0,0,0.25);
+    animation:float 4s ease-in-out infinite;
+}
+
+/* Footer */
+
+.footer{
+    text-align:center;
+    padding:25px;
+    margin-top:30px;
+    background:#546B41;
+}
+
+.footer p{
+    font-size:17px;
+    font-weight:700;
+    color:white;
+}
+
+/* Animation */
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .main-section{
+        flex-direction:column;
+    }
+
+    .left-content,
+    .right-content{
+        width:100%;
+    }
+
+    .nav-center{
+        display:none;
+    }
+
+    .right-content img{
+        width:100%;
+    }
+}
+
+</style>
 
 <script>
+function toggleContent(id){
+    let content = document.getElementById(id);
 
-function sendSOS() {
-
-navigator.geolocation.getCurrentPosition(function(position){
-
-fetch("/sos/", {
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-latitude:position.coords.latitude,
-longitude:position.coords.longitude
-})
-})
-
-})
-
+    if(content.style.display === "block"){
+        content.style.display = "none";
+    }else{
+        content.style.display = "block";
+    }
 }
-
-
-function fakeCall(){
-
-document.getElementById("call").innerHTML = "📞 Incoming Call... Mom Calling";
-
-setTimeout(function(){
-alert("Call Ended");
-document.getElementById("call").innerHTML="";
-},5000)
-
-}
-
 </script>
+
+</head>
+<body>
+
+<div class="navbar">
+
+    <div class="nav-left">
+        <img src="{% static 'images/logoE.png' %}" class="nav-logo">
+        SheSecure
+    </div>
+
+    <div class="nav-center">
+        <a href="/home/">Home</a>
+        <a href="/featuress/">Featuress</a>
+        <a href="/contact/">Contact</a>
+    </div>
+
+    <div class="nav-right">
+        <a href="/login/">Login</a> |
+        <a href="/register/">Register</a>
+    </div>
+
+</div>
+
+<div class="hero">
+    <h1>SheSecure💚</h1>
+    <p>Your safety matters everywhere, every time</p>
+</div>
+
+<div class="main-section">
+
+    <div class="left-content">
+
+        <div class="info-card" onclick="toggleContent('tips')">
+            <h3>Safety Tips</h3>
+            <div class="info-content" id="tips">
+                Prioritize Personal Protective Equipment (PPE)<br>
+                Follow Safety Protocols Rigorously.<br>
+                Report Hazards Immediately.<br>
+                Maintain a Clean Workspace.<br>
+                Use Tools and Machinery Properly.<br>
+                Stay Informed and Trained.<br>
+                Promote a Safety-First Culture.
+            </div>
+        </div>
+
+        <div class="info-card" onclick="toggleContent('helpline')">
+            <h3>Helpline Numbers</h3>
+            <div class="info-content" id="helpline">
+                112: Emergency Response Support System (Police, Health, Fire).<br>
+                181: 24/7 National Women Helpline (Domestic Violence/Crisis Support).<br>
+                1091: Women Police Helpline (All India).<br>
+                7827170170: National Commission for Women (NCW) Helpline.<br>
+                1090: Women Power Line (Uttar Pradesh).<br>
+                1930: Cyber Crime Helpline.<br>
+                1098: Childline (for women with children in distress).<br>
+                07533066009: Acid Attack Survivor Help.
+            </div>
+        </div>
+
+        <div class="info-card" onclick="toggleContent('laws')">
+            <h3>Women Safety Laws</h3>
+            <div class="info-content" id="laws">
+                Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013<br>
+                Criminal Law (Amendment) Act, 2013 (Nirbhaya Act)<br>
+                Dowry Prohibition Act, 1961<br>
+                Prohibition of Child Marriage Act, 2006<br>
+                Indecent Representation of Women (Prohibition) Act, 1986<br>
+                Immoral Traffic (Prevention) Act, 1956<br>
+                Medical Termination of Pregnancy (Amendment) Act, 2021<br>
+                Maternity Benefit (Amendment) Act, 2017<br>
+                Commission of Sati (Prevention) Act, 1987<br>
+                Equal Remuneration Act, 1976<br>
+                Muslim Women (Protection of Rights on Marriage) Act, 2019
+            </div>
+        </div>
+
+    </div>
+
+    <div class="right-content">
+
+        <img src="{% static 'images/home1.png' %}">
+        
+
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>This web is for you every time for your safety • With You is always for you</p>
+</div>
 
 </body>
 </html>

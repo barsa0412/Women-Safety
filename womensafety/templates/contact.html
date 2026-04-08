@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact | SheSecure</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(135deg,#FFF8EC,#DCCCAC,#99AD7A,#546B41);
+    min-height:100vh;
+}
+
+/* Navbar */
+
+.navbar{
+    width:100%;
+    padding:18px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,0.35);
+    backdrop-filter:blur(10px);
+}
+
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:22px;
+    font-weight:700;
+    color:black;
+}
+
+.nav-logo{
+    width:45px;
+}
+
+.nav-center{
+    display:flex;
+    gap:30px;
+}
+
+.nav-center a,
+.nav-right a{
+    color:black;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.nav-center a:hover,
+.nav-right a:hover{
+    color:#546B41;
+}
+
+/* Main Section */
+
+.main-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:60px 20px;
+}
+
+/* Contact Card */
+
+.form-card{
+    width:100%;
+    max-width:500px;
+    background:rgba(255,255,255,0.65);
+    padding:40px;
+    border-radius:20px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    animation:fadeUp 1s ease;
+}
+
+.form-card h2{
+    text-align:center;
+    color:#546B41;
+    font-size:30px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.form-card p{
+    text-align:center;
+    margin-bottom:25px;
+    color:black;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:12px;
+    background:#f5f5f5;
+    font-size:15px;
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#546B41;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#435535;
+}
+
+/* Footer */
+
+.footer{
+    text-align:center;
+    padding:20px;
+    background:#546B41;
+    margin-top:40px;
+}
+
+.footer p{
+    color:white;
+    font-weight:700;
+}
+
+/* Animation */
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .nav-center{
+        display:none;
+    }
+
+    .form-card{
+        padding:30px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<div class="navbar">
+
+    <div class="nav-left">
+        <img src="{% static 'images/logoE.png' %}" class="nav-logo">
+        SheSecure
+    </div>
+
+    <div class="nav-center">
+        <a href="/home/">Home</a>
+        <a href="/featuress/">Featuress</a>
+        <a href="/contact/">Contact</a>
+    </div>
+
+    <div class="nav-right">
+        <a href="/login/">Login</a> |
+        <a href="/register/">Register</a>
+    </div>
+
+</div>
+
+<!-- Contact Form -->
+
+<div class="main-wrapper">
+
+    <div class="form-card">
+
+        <h2>Add Emergency Contact</h2>
+
+        <p>Save trusted contact for emergency alerts</p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input type="text" name="name" placeholder="Full Name" required>
+
+            <input type="text" name="phone" placeholder="Phone Number" required>
+
+            <input type="email" name="email" placeholder="Email Address" required>
+
+            <button type="submit">Save Contact</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+
+<div class="footer">
+    <p>This web is for you every time for your safety • With You is always for you</p>
+</div>
+
+</body>
+</html>

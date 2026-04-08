@@ -12,6 +12,15 @@ from .models import EmergencyContact, SOSAlert, AudioRecord, LiveLocation
 import json
 
 
+def home(request):
+    return render(request, 'home.html')
+
+def features(request):
+    contacts = contact.objects.all()
+    return render(request,'features.html',{'contacts':contacts})
+
+def contact(request):
+    return render(request, 'contact.html')
 # =========================
 # REGISTER
 # =========================
@@ -51,7 +60,7 @@ def user_login(request):
 
         if user is not None:
             login(request, user)
-            return redirect("/dashboard/")
+            return redirect("/features/")
         else:
             return render(request, "login.html", {"error": "Invalid login credentials"})
 
@@ -67,15 +76,15 @@ def user_logout(request):
 
 
 # =========================
-# DASHBOARD
+# FRATURE
 # =========================
 @login_required
-def dashboard(request):
+def features(request):
 
     contacts = EmergencyContact.objects.filter(user=request.user)
     recordings = AudioRecord.objects.filter(user=request.user).order_by('-created_at')
 
-    return render(request, "dashboard.html", {
+    return render(request, "features.html", {
         "contacts": contacts,
         "recordings": recordings
     })
@@ -85,7 +94,7 @@ def dashboard(request):
 # ADD CONTACT
 # =========================
 @login_required
-def add_contact(request):
+def contact(request):
 
     if request.method == "POST":
 
@@ -100,9 +109,9 @@ def add_contact(request):
             email=email
         )
 
-        return redirect("/dashboard/")
+        return redirect("/features/")
 
-    return render(request, "add_contact.html")
+    return render(request, "contact.html")
 
 
 # =========================
@@ -184,7 +193,7 @@ def upload_audio(request):
                 audio=audio_file
             )
 
-    return redirect("/dashboard/")
+    return redirect("/features/")
 # =========================
 # SAVE LIVE LOCATION
 # =========================
