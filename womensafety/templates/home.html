@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Women Safety App</title>
+</head>
+
+<body style="text-align:center; font-family:Arial;">
+
+<h1>🚨 Women Safety Web Application</h1>
+
+<!-- SOS BUTTON -->
+<button onclick="sendSOS()" style="padding:15px; background:red; color:white; font-size:20px;">
+SOS ALERT
+</button>
+
+<br><br>
+
+<!-- FAKE CALL BUTTON -->
+<button onclick="fakeCall()" style="padding:15px; background:green; color:white; font-size:20px;">
+Fake Call Escape
+</button>
+
+<br><br>
+
+<h2 id="call"></h2>
+
+<script>
+
+function sendSOS() {
+
+navigator.geolocation.getCurrentPosition(function(position){
+
+fetch("/sos/", {
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+latitude:position.coords.latitude,
+longitude:position.coords.longitude
+})
+})
+
+})
+
+}
+
+
+function fakeCall(){
+
+document.getElementById("call").innerHTML = "📞 Incoming Call... Mom Calling";
+
+setTimeout(function(){
+alert("Call Ended");
+document.getElementById("call").innerHTML="";
+},5000)
+
+}
+
+</script>
+
+</body>
+</html>

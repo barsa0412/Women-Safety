@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add Contact | SheSecure</title>
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+
+<body>
+
+<!-- 🔷 TOP HEADER -->
+<div class="top-header">
+
+    <h2 class="logo">🛡 SheSecure</h2>
+
+    <div class="top-buttons">
+        <a href="/dashboard/" class="btn-small">Dashboard</a>
+        <a href="/logout/" class="btn-small logout">Logout</a>
+    </div>
+
+</div>
+
+
+<!-- 💖 CENTER CONTENT -->
+<div class="center-page">
+
+    <div class="form-card">
+
+        <h2>Add Emergency Contact</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="text" name="name" placeholder="👤 Full Name" required>
+
+            <input type="text" name="phone" placeholder="📞 Phone Number" required>
+
+            <input type="email" name="email" placeholder="✉ Email Address" required>
+
+            <button type="submit" class="main-btn">Save Contact</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

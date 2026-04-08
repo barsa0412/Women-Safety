@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Safety Map</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+rel="stylesheet"
+/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#111;
+color:white;
+}
+
+h2{
+text-align:center;
+padding:10px;
+}
+
+#map{
+height:90vh;
+width:100%;
+}
+
+button{
+position:absolute;
+top:20px;
+left:20px;
+padding:12px 20px;
+background:red;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>🗺 Safety Map</h2>
+
+<button onclick="getLocation()">📍 My Location</button>
+
+<div id="map"></div>
+
+<script>
+
+var map = L.map('map').setView([20.5937,78.9629],5);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+maxZoom:19
+}
+).addTo(map);
+
+
+function getLocation(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(showPosition);
+
+}else{
+
+alert("Geolocation not supported")
+
+}
+
+}
+
+function showPosition(position){
+
+var lat = position.coords.latitude;
+var lon = position.coords.longitude;
+
+map.setView([lat,lon],15);
+
+L.marker([lat,lon])
+.addTo(map)
+.bindPopup("You are here")
+.openPopup();
+
+}
+
+</script>
+
+</body>
+</html>
