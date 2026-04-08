@@ -14,7 +14,8 @@
 
 <body>
 
-<!-- 🔷 TOP HEADER -->
+<!-- TOP HEADER -->
+
 <div class="top-header">
 
     <h2 class="logo">🛡 SheSecure</h2>
@@ -26,13 +27,17 @@
 
 </div>
 
+<!-- CENTER PAGE -->
 
-<!-- 💖 CENTER CONTENT -->
 <div class="center-page">
 
     <div class="form-card">
 
-        <h2>Add Emergency Contact</h2>
+        <h2 style="margin-bottom:10px;">Add Emergency Contact</h2>
+
+        <p style="margin-bottom:20px; color:#546B41;">
+            Save trusted contact for emergency alerts
+        </p>
 
         <form method="POST">
             {% csrf_token %}

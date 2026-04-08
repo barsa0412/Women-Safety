@@ -3,13 +3,13 @@
 =============================== */
 
 :root{
-    --bg:#0f172a;
-    --card:#1a2332;
-    --soft:#243041;
-    --text:#e2e8f0;
-    --muted:#94a3b8;
-    --accent:#ec4899;
-    --danger:#ff2e2e;
+    --bg:#FFF8EC;
+    --card:#DCCCAC;
+    --soft:#f3eadb;
+    --text:#546B41;
+    --muted:#99AD7A;
+    --accent:#99AD7A;
+    --danger:#546B41;
 }
 
 body{
@@ -28,23 +28,36 @@ body{
     justify-content:space-between;
     align-items:center;
     padding:18px 30px;
-    background:#0f172a;
-    border-bottom:1px solid #1f2937;
+    background:#546B41;
+    border-bottom:1px solid #99AD7A;
 }
 
 .navbar h2{
     margin:0;
+    color:#FFF8EC;
 }
 
 .navbar a{
     margin-left:15px;
-    color:var(--muted);
+    color:#FFF8EC;
     text-decoration:none;
     font-weight:500;
 }
 
 .navbar a:hover{
-    color:white;
+    color:#DCCCAC;
+}
+
+/* ===============================
+📌 PAGE TITLE
+=============================== */
+
+.title{
+    text-align:center;
+    margin:25px 0;
+    color:#546B41;
+    font-size:28px;
+    font-weight:bold;
 }
 
 /* ===============================
@@ -58,11 +71,26 @@ body{
 }
 
 /* SECTION SPACING */
+
 .section{
-    margin-bottom:30px;
+    margin-bottom:25px;
 }
 
-/* 🔴 SOS CENTER PERFECT */
+/* ===============================
+📦 CARD
+=============================== */
+
+.soft-card{
+    background:var(--card);
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ===============================
+🔴 SOS SECTION
+=============================== */
+
 .sos-section{
     width:100%;
     display:flex;
@@ -70,14 +98,17 @@ body{
     align-items:center;
     justify-content:center;
     text-align:center;
-    margin:40px 0;
+    margin:30px 0;
 }
 
-/* 🔴 SOS BUTTON */
+/* ===============================
+🔴 SOS BUTTON
+=============================== */
+
 .sos-btn{
     width:140px;
     height:140px;
-    background:#ff2e2e;
+    background:#99AD7A;
     border:none;
     border-radius:50%;
 
@@ -92,122 +123,37 @@ body{
     cursor:pointer;
     margin:20px auto;
 
-    /* glow */
-    box-shadow:0 0 15px rgba(255,0,0,0.6);
-
-    /* animation */
+    box-shadow:0 0 15px rgba(153,173,122,0.5);
     animation:pulse 1.5s infinite;
 }
 
-/* hover */
 .sos-btn:hover{
     transform:scale(1.05);
 }
 
-/* click */
 .sos-btn:active{
     transform:scale(0.95);
-    box-shadow:0 0 40px rgba(255,0,0,1);
+    box-shadow:0 0 40px rgba(153,173,122,0.9);
 }
 
-/* 🔥 pulse animation */
+/* Pulse Animation */
+
 @keyframes pulse{
-    0%{ box-shadow:0 0 10px rgba(255,0,0,0.6); }
-    50%{ box-shadow:0 0 40px rgba(255,0,0,1); }
-    100%{ box-shadow:0 0 10px rgba(255,0,0,0.6); }
-}
-/* ===============================
-📦 SOFT CARD
-=============================== */
-
-.soft-card{
-    background:var(--card);
-    border-radius:18px;
-    padding:20px;
+    0%{ box-shadow:0 0 10px rgba(153,173,122,0.5); }
+    50%{ box-shadow:0 0 35px rgba(153,173,122,0.9); }
+    100%{ box-shadow:0 0 10px rgba(153,173,122,0.5); }
 }
 
 /* ===============================
-📇 CONTACT LIST
+📇 CONTACT CARD
 =============================== */
 
-/* ===============================
-🔥 ADD CONTACT PERFECT ALIGNMENT
-=============================== */
-
-/* HEADER */
-.top-header{
-    position:relative;
-    padding:20px;
-    text-align:center;
-    border-bottom:1px solid #1f2937;
-}
-
-/* CENTER LOGO */
-.logo{
-    margin:0;
-}
-
-/* TOP RIGHT BUTTONS */
-.top-buttons{
-    position:absolute;
-    top:20px;
-    right:20px;
-}
-
-/* BUTTON STYLE */
-.btn-small{
-    background:#ec4899;
-    color:white;
-    padding:6px 12px;
-    border-radius:6px;
-    text-decoration:none;
-    margin-left:10px;
-    font-size:14px;
-}
-
-.logout{
-    background:#ef4444;
-}
-
-/* FULL CENTER PAGE */
-.center-page{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:calc(100vh - 80px);
-}
-
-/* FORM CARD */
-.form-card{
-    background:#1a2332;
-    padding:30px;
-    border-radius:15px;
-    width:320px;
-    text-align:center;
-}
-
-/* INPUT */
-.form-card input{
-    width:100%;
+.contact{
+    margin-top:15px;
     padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:8px;
-    background:#111827;
-    color:white;
-}
-
-/* BUTTON */
-.main-btn{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:8px;
-    background:#ec4899;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
+    border-radius:10px;
+    background:#FFF8EC;
+    line-height:1.6;
 }
 
 /* ===============================
@@ -220,6 +166,10 @@ body{
     flex-wrap:wrap;
     margin-top:10px;
 }
+
+/* ===============================
+🔘 GENERAL BUTTONS
+=============================== */
 
 button{
     background:var(--accent);
@@ -245,26 +195,99 @@ button:hover{
     margin-top:10px;
 }
 
+/* MAP BUTTON GROUP */
+
+.map-buttons{
+    margin-top:15px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+/* ===============================
+🤖 CHATBOT
+=============================== */
+
+.chatbot{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#99AD7A;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.chatbox{
+    display:none;
+    flex-direction:column;
+    position:fixed;
+    bottom:90px;
+    right:20px;
+    width:300px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    overflow:hidden;
+}
+
+.chatbox-header{
+    background:#546B41;
+    color:white;
+    padding:12px;
+    font-weight:bold;
+}
+
+.chatbox-messages{
+    height:220px;
+    overflow-y:auto;
+    padding:10px;
+    color:black;
+}
+
+.chatbox-input{
+    display:flex;
+    border-top:1px solid #ddd;
+}
+
+.chatbox-input input{
+    flex:1;
+    border:none;
+    padding:10px;
+    outline:none;
+}
+
+.chatbox-input button{
+    border-radius:0;
+}
+
 /* ===============================
 📱 MOBILE RESPONSIVE
 =============================== */
 
 @media(max-width:768px){
 
-.row{
-    flex-direction:column;
-}
+    .navbar{
+        flex-direction:column;
+        gap:10px;
+    }
 
-.navbar{
-    flex-direction:column;
-    gap:10px;
-}
+    .sos-btn{
+        width:110px;
+        height:110px;
+        font-size:28px;
+    }
 
-.sos-btn{
-    width:110px;
-    height:110px;
-    font-size:28px;
-    position: center;
-}
+    .chatbox{
+        width:90%;
+        right:5%;
+    }
 
 }
