@@ -11,6 +11,10 @@
 
 <style>
 
+html{
+    scroll-behavior:smooth;
+}
+
 *{
     margin:0;
     padding:0;
@@ -94,8 +98,6 @@ body{
     gap:40px;
 }
 
-/* Left */
-
 .left-content{
     width:50%;
 }
@@ -129,8 +131,6 @@ body{
     color:black;
 }
 
-/* Right */
-
 .right-content{
     width:50%;
     display:flex;
@@ -144,6 +144,82 @@ body{
     border-radius:20px;
     box-shadow:0 12px 25px rgba(0,0,0,0.25);
     animation:float 4s ease-in-out infinite;
+}
+
+/* ABOUT SECTION */
+
+/* ABOUT SECTION */
+
+.about-section{
+    padding:70px 50px;
+}
+
+.about-title{
+    text-align:center;
+    font-size:42px;
+    color:#546B41;
+    margin-bottom:45px;
+    font-weight:700;
+    animation:fadeUp 1s ease;
+}
+
+.about-grid{
+    display:flex;
+    gap:30px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.about-card{
+    width:380px;
+    background:white;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+    transition:0.5s ease;
+    animation:fadeUp 1s ease;
+}
+
+.about-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 40px rgba(0,0,0,0.2);
+}
+
+.about-card img{
+    width:100%;
+    height:240px;
+    object-fit:cover;
+    display:block;
+}
+
+.about-card h3{
+    text-align:center;
+    color:#2f4f2f;
+    font-size:28px;
+    margin-top:25px;
+    margin-bottom:15px;
+    font-weight:700;
+}
+
+.about-card p{
+    text-align:center;
+    font-size:18px;
+    line-height:1.7;
+    padding:0 25px 30px;
+    color:#333;
+}
+
+/* Animation */
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 /* Footer */
@@ -161,12 +237,29 @@ body{
     color:white;
 }
 
-/* Animation */
+/* Animations */
 
 @keyframes float{
     0%{transform:translateY(0);}
     50%{transform:translateY(-10px);}
     100%{transform:translateY(0);}
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(50px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes zoomPulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.04);}
+    100%{transform:scale(1);}
 }
 
 /* Responsive */
@@ -188,6 +281,10 @@ body{
 
     .right-content img{
         width:100%;
+    }
+
+    .about-grid{
+        grid-template-columns:1fr;
     }
 }
 
@@ -217,8 +314,9 @@ function toggleContent(id){
 
     <div class="nav-center">
         <a href="/home/">Home</a>
-        <a href="/featuress/">Featuress</a>
+        <a href="/features/">Features</a>
         <a href="/contact/">Contact</a>
+        <a href="#about">About Us</a>
     </div>
 
     <div class="nav-right">
@@ -291,6 +389,51 @@ function toggleContent(id){
     </div>
 
 </div>
+
+<!-- ABOUT SECTION -->
+
+<!-- ABOUT SECTION -->
+
+<section id="about" class="about-section">
+
+    <h2 class="about-title">More About SheSecure</h2>
+
+    <div class="about-grid">
+
+        <div class="about-card">
+            <img src="{% static 'images/about2.jpeg' %}">
+            <h3>Government Support</h3>
+            <p>
+                law enforcement support: Ministry of Home Affairs 
+                (Women Safety Division): Focuses on strengthening law enforcement responses and tackling crimes like human trafficking. 
+                National Commission for Women (NCW): Offers helplines (14490) and dedicated cells for complaint redressal, legal support, and NRI-related issues. 
+                Telangana Police Women Safety Wing: Provides access to tele-counselling apps and initiatives specifically for domestic violence and public safety. 
+                Women Safety Wing, Telangana Police Women Safety Wing, Telangana Police
+            </p>
+        </div>
+
+        <div class="about-card">
+            <img src="{% static 'images/about3.png' %}">
+            <h3>Digital Privacy</h3>
+            <p>
+                 Meta Women’s Safety Center: Provides step-by-step guides for protecting against threatening content on social platforms. 
+                 WESNET Tech Safety Toolkit: A resource for women experiencing technology-facilitated abuse, focusing on smartphone privacy and online security. Women CyberSecurity Society: serves as a hub for emergency resources, legal information, and technology-driven protection tools use this information .
+            </p>
+        </div>
+
+        <div class="about-card">
+            <img src="{% static 'images/about1.png' %}">
+            <h3>Our Mission</h3>
+            <p>
+                immediate assistance: SOS/Emergency Button: A prominent button that, when clicked, sends an alert message with the user's live location to trusted contacts . 
+                Safe Route Mapping: Integration of GPS technology to suggest well-lit or hospital restro routes and locate nearby police stations. 
+                Safety Audits & Crowdsourcing: Tools that allow users to view or contribute "safety scores" for specific areas based on lighting, visibility, and crowd presence (
+            </p>
+        </div>
+
+    </div>
+
+</section>
 
 <div class="footer">
     <p>This web is for you every time for your safety • With You is always for you</p>

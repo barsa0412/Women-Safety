@@ -1,3 +1,6 @@
+# =========================
+# IMPORTS
+# =========================
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -6,21 +9,29 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib import messages
 
-from .models import EmergencyContact, SOSAlert, AudioRecord, LiveLocation, DangerLocation
-from .models import EmergencyContact, SOSAlert, AudioRecord, LiveLocation
+from .models import (
+    EmergencyContact,
+    SOSAlert,
+    AudioRecord,
+    LiveLocation,
+    DangerLocation,
+    CallRecording
+)
+
 import json
+import requests
 
-
+def safe_map(request):
+    return render(request, 'safe_map.html')
+# =========================
+# HOME PAGE
+# =========================
 def home(request):
     return render(request, 'home.html')
 
-def features(request):
-    contacts = contact.objects.all()
-    return render(request,'features.html',{'contacts':contacts})
 
-def contact(request):
-    return render(request, 'contact.html')
 # =========================
 # REGISTER
 # =========================
@@ -76,17 +87,25 @@ def user_logout(request):
 
 
 # =========================
-# FRATURE
+# FEATURES PAGE (MAIN DASHBOARD)
 # =========================
 @login_required
 def features(request):
 
     contacts = EmergencyContact.objects.filter(user=request.user)
-    recordings = AudioRecord.objects.filter(user=request.user).order_by('-created_at')
+
+    audio_recordings = AudioRecord.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+
+    call_recordings = CallRecording.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
 
     return render(request, "features.html", {
         "contacts": contacts,
-        "recordings": recordings
+        "audio_recordings": audio_recordings,
+        "call_recordings": call_recordings
     })
 
 
@@ -102,14 +121,18 @@ def contact(request):
         phone = request.POST.get("phone")
         email = request.POST.get("email")
 
-        EmergencyContact.objects.create(
-            user=request.user,
-            name=name,
-            phone=phone,
-            email=email
-        )
+        if EmergencyContact.objects.filter(phone=phone).exists() or EmergencyContact.objects.filter(email=email).exists():
+            messages.error(request, "Contact already saved!")
+        else:
+            EmergencyContact.objects.create(
+                user=request.user,
+                name=name,
+                phone=phone,
+                email=email
+            )
+            messages.success(request, "Contact saved successfully!")
 
-        return redirect("/features/")
+        return redirect('contact')
 
     return render(request, "contact.html")
 
@@ -123,58 +146,58 @@ def safety_map(request):
 
 
 # =========================
-# SOS ALERT (WITH AUDIO + EMAIL)
+# SOS ALERT
 # =========================
 @csrf_exempt
 @login_required
-def sos_alert(request):
+def send_sos(request):
 
     if request.method == "POST":
 
         data = json.loads(request.body)
 
-        latitude = data.get("lat")
-        longitude = data.get("lon")
+        lat = data.get("lat")
+        lon = data.get("lon")
 
-        location_link = f"https://www.google.com/maps?q={latitude},{longitude}"
+        location_link = f"https://www.google.com/maps?q={lat},{lon}"
+        message = f"🚨 EMERGENCY! I am in danger. My location: {location_link}"
 
-        # Get latest audio
-        latest_audio = AudioRecord.objects.filter(user=request.user).last()
-
-        audio_url = ""
-        if latest_audio:
-            audio_url = request.build_absolute_uri(latest_audio.audio.url)
-
-        # Save SOS
-        SOSAlert.objects.create(
-            user=request.user,
-            latitude=latitude,
-            longitude=longitude,
-            location_link=location_link
-        )
-
-        # =========================
-        # SEND EMAIL TO CONTACTS
-        # =========================
         contacts = EmergencyContact.objects.filter(user=request.user)
-        emails = [c.email for c in contacts if c.email]
+        numbers = [c.phone for c in contacts]
 
-        if emails:
-            send_mail(
-                "🚨 Emergency Alert",
-                f"I am in danger!\nMy location: {location_link}\nAudio: {audio_url}",
-                settings.EMAIL_HOST_USER,
-                emails,
-                fail_silently=True
-            )
+        if numbers:
+            send_sms(numbers, message)
 
         return JsonResponse({
-            "status": "SOS Sent",
-            "location": location_link,
-            "audio": audio_url
+            "status": "success",
+            "numbers": numbers
         })
 
-    return JsonResponse({"error": "Invalid request"})
+    return JsonResponse({"status": "failed"})
+
+
+# =========================
+# SEND SMS
+# =========================
+def send_sms(numbers, message):
+
+    url = "https://www.fast2sms.com/dev/bulkV2"
+
+    payload = {
+        "sender_id": "FSTSMS",
+        "message": message,
+        "language": "english",
+        "route": "q",
+        "numbers": ",".join(numbers)
+    }
+
+    headers = {
+        "authorization": "YOUR_API_KEY",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    print(response.text)
 
 
 # =========================
@@ -194,10 +217,39 @@ def upload_audio(request):
             )
 
     return redirect("/features/")
-# =========================
-# SAVE LIVE LOCATION
-# =========================
 
+
+# =========================
+# FAKE CALL PAGE
+# =========================
+@login_required
+def fake_call_page(request):
+    return render(request, "fake_call.html")
+
+
+# =========================
+# SAVE CALL RECORDING
+# =========================
+@login_required
+def upload_call_recording(request):
+
+    if request.method == "POST":
+
+        audio = request.FILES.get("audio")
+
+        if audio:
+            CallRecording.objects.create(
+                user=request.user,
+                audio=audio
+            )
+            return JsonResponse({"status": "saved"})
+
+    return JsonResponse({"status": "failed"})
+
+
+# =========================
+# LIVE LOCATION SAVE
+# =========================
 @csrf_exempt
 @login_required
 def live_location(request):
@@ -217,17 +269,18 @@ def live_location(request):
         return JsonResponse({"status": "updated"})
 
     return JsonResponse({"error": "Invalid request"})
-# =========================
-# TRACK PAGE (FOR FRIEND)
-# =========================
 
+
+# =========================
+# TRACK USER PAGE
+# =========================
 def track_user(request, user_id):
-
     return render(request, "track.html", {"user_id": user_id})
+
+
 # =========================
 # GET LIVE LOCATION
 # =========================
-
 def get_live_location(request, user_id):
 
     try:
@@ -241,8 +294,9 @@ def get_live_location(request, user_id):
     except:
         return JsonResponse({"error": "No data"})
 
+
 # =========================
-# DANGER HEATMAP DATA (NEW)
+# DANGER LOCATIONS
 # =========================
 @login_required
 def danger_locations(request):
@@ -253,7 +307,6 @@ def danger_locations(request):
     ]
 
     return JsonResponse({"points": data})
-
 
 
 # =========================
@@ -287,10 +340,10 @@ def chatbot(request):
             reply = "Trust your instincts. Leave the place immediately."
 
         elif "travel" in message:
-            reply = "Always inform someone before traveling and keep emergency contacts ready."
+            reply = "Always inform someone before traveling."
 
         else:
-            reply = "I am your safety assistant. Ask about danger, travel safety, SOS, or emergency help."
+            reply = "I am your safety assistant."
 
         return JsonResponse({"reply": reply})
 

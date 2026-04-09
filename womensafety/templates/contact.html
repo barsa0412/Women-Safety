@@ -188,7 +188,7 @@ button:hover{
 
     <div class="nav-center">
         <a href="/home/">Home</a>
-        <a href="/featuress/">Featuress</a>
+        <a href="/features/">Features</a>
         <a href="/contact/">Contact</a>
     </div>
 
@@ -208,6 +208,15 @@ button:hover{
         <h2>Add Emergency Contact</h2>
 
         <p>Save trusted contact for emergency alerts</p>
+
+        {% if messages %}
+        {% for message in messages %}
+            <p style="color:red; text-align:center; margin-bottom:10px;">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
 
         <form method="POST">
 

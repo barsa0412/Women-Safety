@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
+
 # -----------------------------
 # Emergency Contacts
 # -----------------------------
@@ -12,19 +14,18 @@ class EmergencyContact(models.Model):
         on_delete=models.CASCADE
     )
 
-    name = models.CharField(
-        max_length=100
-    )
+    name = models.CharField(max_length=100)
 
     phone = models.CharField(
-        max_length=15
+        max_length=15,
+        unique=True   # ✅ prevent duplicate phone
     )
 
-    email = models.EmailField()
-
-    created_at = models.DateTimeField(
-        auto_now_add=True
+    email = models.EmailField(
+        unique=True   # ✅ prevent duplicate email
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -52,6 +53,17 @@ class SOSAlert(models.Model):
 
     def __str__(self):
         return f"SOS Alert - {self.user.username}"
+    
+
+ ### FAKE CALL 
+
+class CallRecording(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    audio = models.FileField(upload_to="call_recordings/")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
 
 # ===============================
 # 🚨 DANGER LOCATION MODEL

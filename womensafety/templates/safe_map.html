@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Safe Places Near Me</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+
+        .controls {
+            text-align: center;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 10px;
+            border: none;
+            background: #546B41;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #99AD7A;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">🚨 Safe Places Near You</h2>
+
+<div class="controls">
+    <button onclick="findPlaces('police')">Police</button>
+    <button onclick="findPlaces('hospital')">Hospital</button>
+    <button onclick="findPlaces('hotel')">Hotel</button>
+    <button onclick="showRoute()">Show Route</button>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+let map = L.map('map').setView([0, 0], 13);
+
+let userLat = null;
+let userLng = null;
+let userMarker = null;
+
+let placeMarkers = [];
+let routeLine = null;
+
+let locationReady = false;
+let lastRequestTime = 0;
+
+/* LOAD MAP */
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+/* GET USER LOCATION */
+navigator.geolocation.getCurrentPosition(
+function(pos){
+
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+
+    locationReady = true;
+
+    map.setView([userLat, userLng], 15);
+
+    userMarker = L.marker([userLat, userLng])
+        .addTo(map)
+        .bindPopup("📍 You are here")
+        .openPopup();
+
+},
+function(){
+    alert("❌ Please allow location access!");
+}
+);
+
+/* CLEAR MARKERS */
+function clearMarkers(){
+    placeMarkers.forEach(m => map.removeLayer(m));
+    placeMarkers = [];
+
+    if(routeLine){
+        map.removeLayer(routeLine);
+    }
+}
+
+/* FIND PLACES */
+function findPlaces(type){
+
+    if(!locationReady){
+        alert("⏳ Wait! Location is loading...");
+        return;
+    }
+
+    let now = Date.now();
+
+    if(now - lastRequestTime < 5000){
+        alert("⚠️ Wait 5 seconds before next search!");
+        return;
+    }
+
+    lastRequestTime = now;
+
+    clearMarkers();
+
+    console.log("Searching:", type, userLat, userLng);
+
+    let url = `https://overpass.kumi.systems/api/interpreter?data=[out:json][timeout:25];node(around:5000,${userLat},${userLng})[amenity=${type}];out;`;
+
+    fetch(url)
+    .then(res => {
+        if(!res.ok){
+            throw new Error("API limit reached");
+        }
+        return res.json();
+    })
+    .then(data => {
+
+        if(!data.elements || data.elements.length === 0){
+            alert("No nearby places found!");
+            return;
+        }
+
+        data.elements.forEach(place => {
+
+            let marker = L.marker([place.lat, place.lon])
+                .addTo(map)
+                .bindPopup(`📍 ${type.toUpperCase()}`);
+
+            placeMarkers.push(marker);
+        });
+
+    })
+    .catch(err => {
+        console.error(err);
+        alert("⚠️ API blocked / slow. Wait 20 seconds and try again.");
+    });
+}
+
+/* SHOW ROUTE */
+function showRoute(){
+
+    if(!locationReady){
+        alert("Location not ready");
+        return;
+    }
+
+    if(placeMarkers.length === 0){
+        alert("Select a place first!");
+        return;
+    }
+
+    let dest = placeMarkers[0].getLatLng();
+
+    if(routeLine){
+        map.removeLayer(routeLine);
+    }
+
+    routeLine = L.polyline([
+        [userLat, userLng],
+        [dest.lat, dest.lng]
+    ], {
+        color: 'red',
+        weight: 5
+    }).addTo(map);
+
+    map.fitBounds(routeLine.getBounds());
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fake Call</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg,#546B41,#99AD7A);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:#2f2f2f;
+}
+
+.call-container{
+    background:#FFF8EC;
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    width:320px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.caller{
+    font-size:28px;
+    margin-bottom:10px;
+    color:#546B41;
+    font-weight:bold;
+}
+
+.number{
+    font-size:16px;
+    color:#777;
+    margin-bottom:30px;
+}
+
+.buttons{
+    display:flex;
+    justify-content:space-between;
+}
+
+.btn{
+    padding:15px 25px;
+    border:none;
+    border-radius:50px;
+    font-size:16px;
+    cursor:pointer;
+    color:white;
+    transition:0.3s;
+}
+
+.accept{
+    background:#546B41;
+}
+
+.accept:hover{
+    background:#3f5232;
+}
+
+.end{
+    background:#DCCCAC;
+    color:#333;
+}
+
+.end:hover{
+    background:#c5b89c;
+}
+
+#status{
+    margin-top:20px;
+    font-size:14px;
+    color:#546B41;
+}
+</style>
+</head>
+
+<body>
+
+<div class="call-container">
+    <div class="caller">📞 Mom ❤️</div>
+    <div class="number">Incoming Call...</div>
+
+    <div class="buttons">
+        <button class="btn accept" onclick="acceptCall()">Accept</button>
+        <button class="btn end" onclick="endCall()">End</button>
+    </div>
+
+    <p id="status"></p>
+</div>
+
+<script>
+let recorder;
+let audioChunks = [];
+
+function getCSRFToken(){
+    let cookies = document.cookie.split(";");
+    for(let i=0;i<cookies.length;i++){
+        let c = cookies[i].trim();
+        if(c.startsWith("csrftoken=")){
+            return c.substring("csrftoken=".length);
+        }
+    }
+    return "";
+}
+
+function acceptCall(){
+    navigator.mediaDevices.getUserMedia({audio:true})
+    .then(stream=>{
+        recorder = new MediaRecorder(stream);
+
+        audioChunks = [];
+
+        recorder.ondataavailable = e=>{
+            audioChunks.push(e.data);
+        };
+
+        recorder.start();
+        document.getElementById("status").innerText = "🎙 Recording started...";
+    })
+    .catch(()=>{
+        alert("Microphone access denied!");
+    });
+}
+
+function endCall(){
+
+    if(!recorder){
+        alert("Call not started!");
+        return;
+    }
+
+    recorder.stop();
+
+    recorder.onstop = function(){
+
+        let blob = new Blob(audioChunks, {type:"audio/webm"});
+
+        let formData = new FormData();
+        formData.append("audio", blob, "call.webm");
+
+        fetch("/upload-call/", {
+            method: "POST",
+            headers:{
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data=>{
+            window.location.href = "/features/";
+        })
+        .catch(err=>{
+            console.error(err);
+            alert("Upload failed!");
+        });
+    }
+}
+</script>
+
+</body>
+</html>
